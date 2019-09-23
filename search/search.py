@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -104,7 +104,7 @@ def nullHeuristic(state, problem=None):
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
 
-    """   
+    """
     return 10
 
 def myHeuristic(state, problem=None):
@@ -115,7 +115,8 @@ def myHeuristic(state, problem=None):
     """
     #print("myHeuristic")
     #print(problem.isGoalState((1,1)))
-    return abs(state[0] - 1) + abs(state[1] - 1)
+    xy2 = problem.goal
+    return abs(state[0] - xy2[0]) + abs(state[1] - xy2[1])
 
 
 def myHeuristic2(state, problem=None):
@@ -136,7 +137,7 @@ def myHeuristic2(state, problem=None):
     if state in canto:
         #print("sim")
         heru = heru * 0.5
-    return heru    
+    return heru
 
 def myHeuristic3(state, problem=None):
     """
@@ -159,55 +160,49 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     #currentState, actions, currentCost = frontier.pop()
     #return ['West','West', 'West','West','South','South','East', 'South','South','West','West']
 
-    frontier = util.PriorityQueue()
+    fronteira = util.PriorityQueue()
 
-    exploredNodes = [] #holds (state, cost)
+    nohExplorado = [] #(state, cost)
 
     startState = problem.getStartState()
-    startNode = (startState, [], 0) #(state, action, cost)
+    nohInicial = (startState, [], 0) #(state, action, cost)
 
-    frontier.push(startNode, 0)
+    fronteira.push(nohInicial, 0)
 
     while not frontier.isEmpty():
 
-        #begin exploring first (lowest-combined (cost+heuristic) ) node on frontier
-        currentState, actions, currentCost = frontier.pop()
+        #pega o Noh de menor "custo" na fila
+        curEstado, todasAcoes, curCusto = fronteira.pop()
 
-        #put popped node into explored list
-        currentNode = (currentState, currentCost)
-        exploredNodes.append((currentState, currentCost))
+        #Coloca Noh atual na lista de explorados
+        nohAtual = (curEstado, curCusto)
+        nohExplorado.append((curEstado, curCusto))
 
-        if problem.isGoalState(currentState):
-            #print(actions)
-            return actions
+        if problem.isGoalState(curEstado):
+            #print(todasAcoes)
+            return todasAcoes
 
         else:
-            #list of (successor, action, stepCost)
-            successors = problem.getSuccessors(currentState)
+            #Lista de Sucessores (successor, action, stepCost) e examina cada um
+            sucessores = problem.getSuccessors(estadoAtual)
+            for sucEstado, sucAcao, sucCusto in sucessores:
+                novaAcao = todasAcoes + [sucAcao]
+                novoCusto = problem.getCostOfActions(novaAcao)
+                novoNoh = (sucEstado, novaAcao, novoCusto)
 
-            #examine each successor
-            for succState, succAction, succCost in successors:
-                newAction = actions + [succAction]
-                newCost = problem.getCostOfActions(newAction)
-                newNode = (succState, newAction, newCost)
+                #Checa se o sucessor já foi visitado
+                jah_foi_explorado = False
+                for explorado in nohExplorado:
+                    exEstado, exCusto = explorado
+                    if (sucEstado == exStado) and (novoCusto >= exCusto):
+                        jah_foi_explorado = True
 
-                #check if this successor has been explored
-                already_explored = False
-                for explored in exploredNodes:
-                    #examine each explored node tuple
-                    exploredState, exploredCost = explored
+                #Se nao foi explorado, coloca na fronteira
+                if not jah_foi_explorado:
+                    fronteira.push(novoNoh, novoCusto + heuristic(sucEstado, problem))
+                    nohExplorado.append((sucEstado, novoCusto))
 
-                    if (succState == exploredState) and (newCost >= exploredCost):
-                        already_explored = True
-
-                #if this successor not explored, put on frontier and explored list
-                if not already_explored:
-                    #frontier.push(newNode, newCost + util.manhattanDistance(currentState, succState))
-                    frontier.push(newNode, newCost + heuristic(succState, problem))
-                    #print("Action em Nodes", newNode[1])
-                    exploredNodes.append((succState, newCost))
-
-    return actions
+    return todasAcoes
 
 
 
