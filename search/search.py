@@ -118,15 +118,23 @@ def myHeuristic(state, problem=None):
     xy2 = problem.goal
     return abs(state[0] - xy2[0]) + abs(state[1] - xy2[1])
 
-
 def myHeuristic2(state, problem=None):
     """
     A heuristic function estimates the cost from the current state to the nearest
     goal in the provided SearchProblem.  This heuristic is trivial.
 
     """
-    #print("myHeuristic3")
+    #print("myHeuristic2")
     #print(problem.isGoalState((1,1)))
+    xy2 = problem.goal
+    return ( (state[0] - xy2[0]) ** 2 + (state[1] - xy2[1]) ** 2 ) ** 0.5
+
+def myHeuristic3(state, problem=None):
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+
+    """
     #canto =[(1,1), (1,2), (2,1), (2,2), (36,36), (35,36), (35,35), (36,35), (1,36),(1,35),(2,36),(2,35),(36,1),(36,2),(35,1),(35,2)]
     canto = []
     for l in range(2):
@@ -138,16 +146,6 @@ def myHeuristic2(state, problem=None):
         #print("sim")
         heru = heru * 0.5
     return heru
-
-def myHeuristic3(state, problem=None):
-    """
-    A heuristic function estimates the cost from the current state to the nearest
-    goal in the provided SearchProblem.  This heuristic is trivial.
-
-    """
-    #print("myHeuristic")
-    #print(problem.isGoalState((1,1))
-    return abs(state[0] - 1) + state[0]
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
@@ -169,7 +167,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     fronteira.push(nohInicial, 0)
 
-    while not frontier.isEmpty():
+    while not fronteira.isEmpty():
 
         #pega o Noh de menor "custo" na fila
         curEstado, todasAcoes, curCusto = fronteira.pop()
@@ -184,17 +182,17 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
         else:
             #Lista de Sucessores (successor, action, stepCost) e examina cada um
-            sucessores = problem.getSuccessors(estadoAtual)
+            sucessores = problem.getSuccessors(curEstado)
             for sucEstado, sucAcao, sucCusto in sucessores:
                 novaAcao = todasAcoes + [sucAcao]
                 novoCusto = problem.getCostOfActions(novaAcao)
                 novoNoh = (sucEstado, novaAcao, novoCusto)
 
-                #Checa se o sucessor já foi visitado
+                #Checa se o sucessor jah foi visitado
                 jah_foi_explorado = False
                 for explorado in nohExplorado:
                     exEstado, exCusto = explorado
-                    if (sucEstado == exStado) and (novoCusto >= exCusto):
+                    if (sucEstado == exEstado) and (novoCusto >= exCusto):
                         jah_foi_explorado = True
 
                 #Se nao foi explorado, coloca na fronteira
