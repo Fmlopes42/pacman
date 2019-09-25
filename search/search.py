@@ -105,7 +105,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
 
     """
-    return 10
+    return 0
 
 def myHeuristic(state, problem=None):
     """
