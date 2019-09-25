@@ -194,11 +194,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     exEstado, exCusto = explorado
                     if (sucEstado == exEstado) and (novoCusto >= exCusto):
                         jah_foi_explorado = True
+                        explorado = (sucEstado, novoCusto)
 
                 #Se nao foi explorado, coloca na fronteira
                 if not jah_foi_explorado:
                     fronteira.push(novoNoh, novoCusto + heuristic(sucEstado, problem))
-                    nohExplorado.append((sucEstado, novoCusto))
+
 
     return todasAcoes
 
